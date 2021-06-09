@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "/QfBPrtW7AMNFObvPGEAvduXFXvqSf6SnPTa5omZvALh0/qsG3M0yhy2VSkM3B/DcJ4TluoUBKQAzcJB7aHCBA==",
+  "success": true,
+  "projectFilePath": "E:\\Scheduler\\Schedule-Calculator\\DateMan\\DateMan\\DateMan.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\fahad\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

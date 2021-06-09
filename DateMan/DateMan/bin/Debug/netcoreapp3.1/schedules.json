@@ -1,0 +1,49 @@
+{
+  "ConceptSchedules": [
+    {
+      "ItemId": "9e46bdc1-904f-4b8e-87cf-3ec2a23621fd",
+      "Title": null,
+      "IsMarkedForDelete": false,
+      "FillEverySlot": false,
+      "ScheduleType": 3,
+      "NumericSlots": [
+        2
+      ],
+      "SpecificDateSlots": [
+
+      ],
+      "DateRanges": [
+        {
+          "StartTime": "2021-06-01T00:00:00Z",
+          "EndTime": "2021-06-08T00:00:00Z"
+        }
+      ],
+      "TimeSlots": [
+        {
+          "StartTime": "1970-01-01T00:00:00Z",
+          "EndTime": "1970-01-01T23:59:59Z"
+        }
+      ],
+      "ChildFoodSchedule": {
+        "ItemId": "8dff0e8e-047b-4ebe-8067-d203490e115f",
+        "Title": null,
+        "IsMarkedForDelete": false,
+        "FillEverySlot": false,
+        "ScheduleType": 4,
+        "NumericSlots": [
+          3
+        ],
+        "SpecificDateSlots": [
+
+        ],
+        "DateRanges": null,
+        "TimeSlots": [
+
+        ],
+        "ChildFoodSchedule": null,
+        "LastModifiedDate": "2021-06-09T13:45:57.646Z"
+      },
+      "LastModifiedDate": "2021-06-09T13:45:57.646Z"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DateMan.ScheduleProcessors;
 
 namespace DateMan
 {
@@ -23,15 +24,44 @@ namespace DateMan
                 {
                     var scheduleType = (ScheduleTypeEnum)schedule.ScheduleType;
 
-                    if (scheduleType == ScheduleTypeEnum.WEEKDAY)
+                    switch (scheduleType)
                     {
-                        var dayOfWeeks = CreateDayOfWeeks(schedule.NumericSlots);
-
-                        var results = GetDateOfDaysByWeek(datasets.Keys.First(), datasets.Keys.Last(), dayOfWeeks);
-
-                       // var updatedDataSets = PopulateDataSet(results, schedule.TimeSlots, datasets);
-
-                        sevenDaySchedules = constructSevenDaySchedules(results, schedule.TimeSlots, sevenDaySchedules);
+                        case ScheduleTypeEnum.WEEKDAY:
+                        {
+                            var weeklyProcessor = new WeeklyProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = weeklyProcessor.Process(schedule);
+                            break;
+                        }
+                        case ScheduleTypeEnum.YEAR_MONTHLY:
+                        {
+                            var monthProcessor = new MonthlyProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = monthProcessor.Process(schedule);
+                            break;
+                        }
+                        case ScheduleTypeEnum.YEAR_SPECIFIC:
+                        {
+                            var yearProcessor = new YearProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = yearProcessor.Process(schedule);
+                            break;
+                        }
+                        case ScheduleTypeEnum.DAILY:
+                        {
+                            var daylyProcessor = new DailyProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = daylyProcessor.Process(schedule);
+                            break;
+                        }
+                        case ScheduleTypeEnum.MONTH_SPECIFIC:
+                        {
+                            var monDailyProcessor = new MonthlySameDateProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = monDailyProcessor.Process(schedule);
+                            break;
+                        }
+                        case ScheduleTypeEnum.MONTH_WEEKLY:
+                        {
+                            var monWeeklyProcessor = new MonthlySameWeekProcessor(datasets, sevenDaySchedules);
+                            sevenDaySchedules = monWeeklyProcessor.Process(schedule);
+                            break;
+                        }
                     }
                 }
             }
@@ -58,12 +88,9 @@ namespace DateMan
             return updatedDataSets;
         }
 
-        private static List<DayOfWeek> CreateDayOfWeeks(List<int> numericSlots)
-        {
-            return numericSlots.Select(numericSlot => (DayOfWeek)numericSlot).ToList();
-        }
+       
 
-        private static List<DateTime> GetDateOfDaysByWeek(DateTime startDate, DateTime endDate, List<DayOfWeek> dayOfWeek)
+        private static List<DateTime> GetDateOfDaysByWeek(DateTime startDate, DateTime endDate, List<DayOfWeek> daysOfWeek)
         {
             var returnDates = new List<DateTime>();
 
@@ -74,7 +101,7 @@ namespace DateMan
 
             while (refIndex <= limitIndex)
             {
-                if (dayOfWeek.Contains(refDate.DayOfWeek))
+                if (daysOfWeek.Contains(refDate.DayOfWeek))
                 {
                     returnDates.Add(refDate);
                 }
@@ -104,7 +131,7 @@ namespace DateMan
 
         private static List<SevenDaySchedule> createSevenDaySchedules(IDictionary<DateTime, List<TimeSlot>> dataSets)
         {
-            return dataSets.Select(item => new SevenDaySchedule {Day = item.Key, TimeSlots = item.Value}).ToList();
+            return dataSets.Select(item => new SevenDaySchedule {Day = item.Key, TimeSlots = item.Value ?? new List<TimeSlot>() }).ToList();
         }
 
         private static List<SevenDaySchedule> constructSevenDaySchedules(IList<DateTime> dates, IList<TimeSlot> timeSlots, List<SevenDaySchedule> sevenDaySchedules)
