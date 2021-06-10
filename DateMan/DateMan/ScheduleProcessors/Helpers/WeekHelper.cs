@@ -8,7 +8,7 @@ namespace DateMan.ScheduleProcessors.Helpers
 {
     public static class WeekHelper
     {
-        static GregorianCalendar _gc = new GregorianCalendar();
+        private static readonly GregorianCalendar Gc = new GregorianCalendar();
         public static List<System.DayOfWeek> CreateDayOfWeeks(this List<int> numericSlots)
         {
             return numericSlots.Select(numericSlot => (System.DayOfWeek)numericSlot).ToList();
@@ -22,7 +22,7 @@ namespace DateMan.ScheduleProcessors.Helpers
 
         private static int GetWeekOfYear(this DateTime time)
         {
-            return _gc.GetWeekOfYear(time, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
+            return Gc.GetWeekOfYear(time, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
         }
 
     }

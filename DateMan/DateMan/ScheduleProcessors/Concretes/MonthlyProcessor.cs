@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using DateMan.ScheduleProcessors.Contracts;
 
-namespace DateMan.ScheduleProcessors
+namespace DateMan.ScheduleProcessors.Concretes
 {
-    public class MonthlyProcessor
+    public class MonthlyProcessor : IDateTimeProcessor
     {
-        public Dictionary<DateTime, List<TimeSlot>> DataSets { get; }
-        public List<SevenDaySchedule> SevenDaySchedules { get; }
+        public List<SevenDaySchedule> SevenDaySchedules { get; private set; }
 
-        public MonthlyProcessor(Dictionary<DateTime,List<TimeSlot>> dataSets, List<SevenDaySchedule> sevenDaySchedules)
+        public List<SevenDaySchedule> Process(List<SevenDaySchedule> sevenDaySchedules, FoodSchedule foodSchedule)
         {
-            DataSets = dataSets;
             SevenDaySchedules = sevenDaySchedules;
-        }
-        public List<SevenDaySchedule> Process(FoodSchedule foodSchedule)
-        {
+
             var timeSlots = foodSchedule.DateRanges;
 
             var startDay = timeSlots.Select(x => x.StartTime).FirstOrDefault();
@@ -41,10 +37,10 @@ namespace DateMan.ScheduleProcessors
             return SevenDaySchedules;
         }
 
-        private List<int> GetRefMonths()
-        {
-            return DataSets.Keys.First().Month != DataSets.Keys.Last().Month ? new List<int> { DataSets.Keys.First().Month, DataSets.Keys.Last().Month } 
-                : new List<int> { DataSets.Keys.First().Month};
-        }
+        //private List<int> GetRefMonths()
+        //{
+        //    return DataSets.Keys.First().Month != DataSets.Keys.Last().Month ? new List<int> { DataSets.Keys.First().Month, DataSets.Keys.Last().Month } 
+        //        : new List<int> { DataSets.Keys.First().Month};
+        //}
     }
 }

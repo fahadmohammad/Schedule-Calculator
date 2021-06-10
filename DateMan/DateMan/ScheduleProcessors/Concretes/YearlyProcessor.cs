@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using DateMan.ScheduleProcessors.Contracts;
 
-namespace DateMan.ScheduleProcessors
+namespace DateMan.ScheduleProcessors.Concretes
 {
-    public class YearProcessor
+    public class YearlyProcessor : IDateTimeProcessor
     {
-        public Dictionary<DateTime, List<TimeSlot>> DataSets { get; }
-        public List<SevenDaySchedule> SevenDaySchedules { get; }
+        public List<SevenDaySchedule> SevenDaySchedules { get; private set; }
 
-        public YearProcessor(Dictionary<DateTime, List<TimeSlot>> dataSets, List<SevenDaySchedule> sevenDaySchedules)
+        public List<SevenDaySchedule> Process(List<SevenDaySchedule> sevenDaySchedules, FoodSchedule foodSchedule)
         {
-            DataSets = dataSets;
             SevenDaySchedules = sevenDaySchedules;
-        }
 
-        public List<SevenDaySchedule> Process(FoodSchedule foodSchedule)
-        {
             var startDay = foodSchedule.DateRanges.Select(x => x.StartTime).FirstOrDefault();
             var endDay = foodSchedule.DateRanges.Select(x => x.EndTime).FirstOrDefault();
 

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DateMan.ScheduleProcessors;
+using DateMan.ScheduleProcessors.Concretes;
+using DateMan.ScheduleProcessors.Factories;
 
 namespace DateMan
 {
@@ -17,7 +19,6 @@ namespace DateMan
                 var datasets = CreateDataSet();
                 var sevenDaySchedules = createSevenDaySchedules(datasets);
 
-                
                 var concept = LoadJson();
 
                 foreach (var schedule in concept.ConceptSchedules.Where(x => !x.IsMarkedForDelete))
@@ -26,40 +27,40 @@ namespace DateMan
 
                     switch (scheduleType)
                     {
+                        case ScheduleTypeEnum.DAILY:
+                        {
+                            var dailyProcessor = DateTimeFactory<DailyProcessor>.CreateDateTimeProcessor();
+                            sevenDaySchedules = dailyProcessor.Process(sevenDaySchedules, schedule);
+                            break;
+                        }
                         case ScheduleTypeEnum.WEEKDAY:
                         {
-                            var weeklyProcessor = new WeeklyProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = weeklyProcessor.Process(schedule);
+                            var weeklyProcessor = DateTimeFactory<WeeklyProcessor>.CreateDateTimeProcessor();
+                            sevenDaySchedules = weeklyProcessor.Process(sevenDaySchedules, schedule);
                             break;
                         }
                         case ScheduleTypeEnum.YEAR_MONTHLY:
                         {
-                            var monthProcessor = new MonthlyProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = monthProcessor.Process(schedule);
+                            var monthlyProcessor = DateTimeFactory<MonthlyProcessor>.CreateDateTimeProcessor();
+                            sevenDaySchedules = monthlyProcessor.Process(sevenDaySchedules, schedule);
                             break;
                         }
                         case ScheduleTypeEnum.YEAR_SPECIFIC:
                         {
-                            var yearProcessor = new YearProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = yearProcessor.Process(schedule);
-                            break;
-                        }
-                        case ScheduleTypeEnum.DAILY:
-                        {
-                            var daylyProcessor = new DailyProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = daylyProcessor.Process(schedule);
+                            var yearlyProcessor = DateTimeFactory<YearlyProcessor>.CreateDateTimeProcessor();
+                                sevenDaySchedules = yearlyProcessor.Process(sevenDaySchedules, schedule);
                             break;
                         }
                         case ScheduleTypeEnum.MONTH_SPECIFIC:
                         {
-                            var monDailyProcessor = new MonthlySameDateProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = monDailyProcessor.Process(schedule);
+                            var monDailyProcessor = DateTimeFactory<MonthlySameDateProcessor>.CreateDateTimeProcessor();
+                                sevenDaySchedules = monDailyProcessor.Process(sevenDaySchedules ,schedule);
                             break;
                         }
                         case ScheduleTypeEnum.MONTH_WEEKLY:
                         {
-                            var monWeeklyProcessor = new MonthlySameWeekProcessor(datasets, sevenDaySchedules);
-                            sevenDaySchedules = monWeeklyProcessor.Process(schedule);
+                            var monWeeklyProcessor = DateTimeFactory<MonthlySameWeekProcessor>.CreateDateTimeProcessor();
+                                sevenDaySchedules = monWeeklyProcessor.Process(sevenDaySchedules, schedule);
                             break;
                         }
                     }

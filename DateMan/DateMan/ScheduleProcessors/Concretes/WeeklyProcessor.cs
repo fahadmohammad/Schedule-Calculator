@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using DateMan.ScheduleProcessors.Contracts;
+using DateMan.ScheduleProcessors.Helpers;
 
-namespace DateMan.ScheduleProcessors
+namespace DateMan.ScheduleProcessors.Concretes
 {
-    public class DailyProcessor
+    public class WeeklyProcessor : IDateTimeProcessor
     {
-        public Dictionary<DateTime, List<TimeSlot>> DataSets { get; }
-        public List<SevenDaySchedule> SevenDaySchedules { get; }
+        public List<SevenDaySchedule> SevenDaySchedules { get; private set; }
 
-        public DailyProcessor(Dictionary<DateTime, List<TimeSlot>> dataSets, List<SevenDaySchedule> sevenDaySchedules)
+        public List<SevenDaySchedule> Process(List<SevenDaySchedule> sevenDaySchedules, FoodSchedule foodSchedule)
         {
-            DataSets = dataSets;
             SevenDaySchedules = sevenDaySchedules;
-        }
 
-        public List<SevenDaySchedule> Process(FoodSchedule foodSchedule)
-        {
+            var daysOfWeek = foodSchedule.NumericSlots.CreateDayOfWeeks();
+
             var timeSlots = foodSchedule.DateRanges;
 
             var startDay = timeSlots.Select(x => x.StartTime).FirstOrDefault();
@@ -25,8 +23,10 @@ namespace DateMan.ScheduleProcessors
 
             foreach (var sevenDaySchedule in SevenDaySchedules)
             {
+                if (!daysOfWeek.Contains(sevenDaySchedule.Day.DayOfWeek)) continue;
+
                 if ((sevenDaySchedule.Day.Date >= startDay.Date && endDay != default && sevenDaySchedule.Day.Date <= endDay.Date)
-                    || (sevenDaySchedule.Day.Date >= startDay.Date && endDay == default))
+                    || (sevenDaySchedule.Day.Date >= startDay && endDay == default))
                 {
                     sevenDaySchedule.TimeSlots.AddRange(foodSchedule.TimeSlots);
                     sevenDaySchedule.IsScheduledFromCms = true;
